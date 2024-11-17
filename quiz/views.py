@@ -1,93 +1,47 @@
-from django.shortcuts import render
-from rest_framework import viewsets, permissions, status
-from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter
-from drf_spectacular.types import OpenApiTypes
+from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.decorators import action
-from django.shortcuts import get_object_or_404
-from .models import Question, UserAnswer
-from rest_framework import generics, permissions
-from .serializers import UserRegistrationSerializer
-from .serializers import (
-    QuestionListSerializer,
-    QuestionDetailSerializer,
-    UserAnswerSerializer,
-    PracticeHistorySerializer,
-)
+from rest_framework.permissions import IsAuthenticated
+from .models import Question, Answer, PracticeHistory
+from .serializers import QuestionSerializer, AnswerSerializer, PracticeHistorySerializer
 
-
-@extend_schema_view(
-    list=extend_schema(
-        summary="List all questions",
-        description="Returns a list of all available quiz questions.",
-        tags=["questions"],
-    ),
-    retrieve=extend_schema(
-        summary="Get question details",
-        description="Returns detailed information about a specific question.",
-        tags=["questions"],
-    ),
-)
-class QuestionViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+# Retrieve a list of questions
+class QuestionListView(generics.ListAPIView):
     queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
 
-    def get_serializer_class(self):
-        if self.action == "list":
-            return QuestionListSerializer
-        return QuestionDetailSerializer
+# Get details of a specific question
+class QuestionDetailView(generics.RetrieveAPIView):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
 
-    @extend_schema(
-        summary="Submit answer to question",
-        description="Submit a user's answer to a specific question.",
-        request={
-            "application/json": {
-                "type": "object",
-                "properties": {
-                    "choice_id": {
-                        "type": "integer",
-                        "description": "ID of the selected choice",
-                    }
-                },
-            }
-        },
-        responses={200: UserAnswerSerializer},
-        tags=["questions"],
-    )
-    @action(detail=True, methods=["post"])
-    def submit_answer(self, request, pk=None):
-        question = self.get_object()
-        serializer = UserAnswerSerializer(
-            data={
-                "question": question.id,
-                "selected_choice": request.data.get("choice_id"),
-            },
-            context={"request": request},
-        )
+# Submit an answer to a question
+class SubmitAnswerView(generics.CreateAPIView):
+    serializer_class = AnswerSerializer
+    permission_classes = [IsAuthenticated]
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def create(self, request, *args, **kwargs):
+        user = request.user
+        question = Question.objects.get(id=request.data['question'])
+        selected_option = request.data['selected_option']
+        is_correct = selected_option == question.correct_option
 
+        # Save the answer
+        Answer.objects.create(user=user, question=question, selected_option=selected_option, is_correct=is_correct)
 
-@extend_schema_view(
-    list=extend_schema(
-        summary="Get user practice history",
-        description="Returns a list of all practice attempts by the current user.",
-        tags=["practice"],
-    ),
-)
-class PracticeHistoryViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+        # Update or create practice history
+        history, _ = PracticeHistory.objects.get_or_create(user=user)
+        history.total_questions += 1
+        if is_correct:
+            history.correct_answers += 1
+        history.save()
+
+        return Response({"is_correct": is_correct, "message": "Answer submitted successfully!"}, status=status.HTTP_201_CREATED)
+
+# Retrieve a user's practice history
+class PracticeHistoryView(generics.RetrieveAPIView):
     serializer_class = PracticeHistorySerializer
+    permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        return UserAnswer.objects.filter(user=self.request.user).order_by(
-            "-answered_at"
-        )
-
-
-class UserRegistrationView(generics.CreateAPIView):
-    serializer_class = UserRegistrationSerializer
-    permission_classes = [permissions.AllowAny]
+    def get_object(self):
+        user = self.request.user
+        return PracticeHistory.objects.get_or_create(user=user)[0]

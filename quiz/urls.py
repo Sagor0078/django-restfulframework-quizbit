@@ -1,13 +1,9 @@
-# urls.py
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import QuestionViewSet, PracticeHistoryViewSet, UserRegistrationView
-
-router = DefaultRouter()
-router.register(r'questions', QuestionViewSet)
-router.register(r'practice-history', PracticeHistoryViewSet, basename='practice-history')
+from django.urls import path
+from .views import QuestionListView, QuestionDetailView, SubmitAnswerView, PracticeHistoryView
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('register/', UserRegistrationView.as_view(), name='register'),
+    path('questions/', QuestionListView.as_view(), name='question-list'),
+    path('questions/<int:pk>/', QuestionDetailView.as_view(), name='question-detail'),
+    path('answers/', SubmitAnswerView.as_view(), name='submit-answer'),
+    path('history/', PracticeHistoryView.as_view(), name='practice-history'),
 ]
