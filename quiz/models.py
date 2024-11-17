@@ -14,7 +14,8 @@ class Question(models.Model):
 
 class Answer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)  # Add this line to link Answer to Question
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    selected_option = models.CharField(max_length=1)  # Add this line
     is_correct = models.BooleanField()
     submitted_at = models.DateTimeField(auto_now_add=True)
 
