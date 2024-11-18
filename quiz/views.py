@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Question, Answer, PracticeHistory
 from .serializers import QuestionSerializer, AnswerSerializer, PracticeHistorySerializer
+from django.http import JsonResponse
 
 
 # Retrieve a list of questions
@@ -71,3 +72,17 @@ class PracticeHistoryView(generics.RetrieveAPIView):
     def get_object(self):
         user = self.request.user
         return PracticeHistory.objects.get_or_create(user=user)[0]
+
+
+
+def bad_request(request, exception):
+    return JsonResponse({'error': 'Bad Request (400)'}, status=400)
+
+def permission_denied(request, exception):
+    return JsonResponse({'error': 'Permission Denied (403)'}, status=403)
+
+def page_not_found(request, exception):
+    return JsonResponse({'error': 'Page Not Found (404)'}, status=404)
+
+def server_error(request):
+    return JsonResponse({'error': 'Server Error (500)'}, status=500)

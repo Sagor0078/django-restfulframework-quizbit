@@ -53,3 +53,13 @@ The code includes error handling to manage different scenarios, such as missing 
 ### Use of Django REST Framework (DRF)
 
 The codebase leverages Django REST Framework (DRF) to create a clean and modular API. DRF promotes modularity and clean code practices by providing tools for building APIs, such as serializers, viewsets, and routers.
+
+
+The codebase primarily follows the **Strategy** design pattern, which is evident in the way Django handles views and serializers. Here’s how the Strategy pattern is applied:
+
+### Strategy Pattern
+
+The Strategy pattern defines a family of algorithms, encapsulates each one, and makes them interchangeable. The pattern lets the algorithm vary independently from clients that use it.
+
+
+
