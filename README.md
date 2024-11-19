@@ -21,10 +21,10 @@ This project is a RESTful API for managing quizzes and user responses using Djan
 - **Install Dependencies**
 ```bash
 # Create a virtual environment
-python3 -m venv venv
+python3 -m venv env
 
 # Activate the virtual environment
-source venv/bin/activate  # On Windows, use: venv\Scripts\activate
+source env/bin/activate  # On Windows, use: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
