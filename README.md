@@ -1,4 +1,4 @@
-# django-restfulframework-quizbit
+# QuizBit
 
 This project is a RESTful API for managing quizzes and user responses using Django and Django REST Framework.
 
@@ -53,6 +53,10 @@ docker-compose build
 ```bash
 docker-compose up
 ```
+## Directory
+
+[![Directory docs](img/direct.png)](https://github.com/Sagor0078/django-restfulframework-quizbit)
+
 
 ## Clean Code and Modularity
 
