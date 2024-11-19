@@ -18,6 +18,42 @@ This project is a RESTful API for managing quizzes and user responses using Djan
    ```
 
 
+- **Install Dependencies**
+```bash
+# Create a virtual environment
+python3 -m venv venv
+
+# Activate the virtual environment
+source venv/bin/activate  # On Windows, use: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+- **Configure the Database**
+```bash
+python manage.py migrate
+```
+
+- **Create a Superuser**
+```bash
+python manage.py createsuperuser
+```
+- **Run the Development Server**
+```bash
+python manage.py runserver
+```
+
+- **Using Docker**
+- **build the docker image**
+```bash
+docker-compose build
+```
+- **Run the docker containers:**
+```bash
+docker-compose up
+```
+
 ## Clean Code and Modularity
 
 The codebase follows several clean code and modular programming principles, which contribute to its maintainability, readability, and scalability. Here are some of the key principles and patterns observed:
