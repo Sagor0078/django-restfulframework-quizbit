@@ -89,7 +89,7 @@ SPECTACULAR_SETTINGS = {
 }
 
 MIDDLEWARE = [
-    "quiz.middleware.LoggingMiddleware",
+    "quiz.middleware.LoggingMiddleware", # Custom logging middleware
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -100,7 +100,7 @@ MIDDLEWARE = [
 ]
 
 
-ROOT_URLCONF = "core.urls"
+ROOT_URLCONF = "core.urls" # The URL configuration file
 
 TEMPLATES = [
     {
@@ -118,7 +118,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "core.wsgi.application"
+WSGI_APPLICATION = "core.wsgi.application" # The WSGI application file
 
 
 # Database
