@@ -53,7 +53,7 @@ docker-compose build
 ```bash
 docker-compose up
 ```
-## Directory
+## Folder Structure
 
 [![Directory docs](img/direct.png)](https://github.com/Sagor0078/django-restfulframework-quizbit)
 
